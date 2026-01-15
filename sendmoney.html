@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallet App - Enviar Dinero</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f0f2f5;
+      padding-top: 40px;
+      padding-bottom: 40px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0px 10px 25px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #343a40;
+      margin-bottom: 25px;
+      font-weight: bold;
+    }
+
+    .btn {
+      border-radius: 50px;
+      padding: 10px 20px;
+      margin-bottom: 10px;
+    }
+    
+    .form-control {
+      border-radius: 10px;
+      height: 45px;
+    }
+
+    #formulario-emergente {
+      display: none;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #dee2e6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Enviar Dinero</h2>
+    
+    <div id="alerta-container"></div>
+
+    <div class="form-group">
+        <label>Buscar contacto:</label>
+        <input type="text" class="form-control" id="buscador" placeholder="Escribe un nombre...">
+    </div>
+
+    <button type="button" id="btn-mostrar-form" class="btn btn-success btn-block mb-3">Agregar nuevo contacto</button>
+
+    <div id="formulario-emergente">
+        <h4>Nuevo Contacto</h4>
+        <input type="text" class="form-control mb-2" id="nuevo-nombre" placeholder="Nombre">
+        <input type="text" class="form-control mb-2" id="nuevo-cbu" placeholder="CBU">
+        <input type="text" class="form-control mb-2" id="nuevo-alias" placeholder="Alias">
+        <input type="text" class="form-control mb-2" id="nuevo-banco" placeholder="Banco">
+        
+        <div class="row">
+            <div class="col-6">
+                <button type="button" id="btn-guardar" class="btn btn-primary btn-block btn-sm">Guardar</button>
+            </div>
+            <div class="col-6">
+                <button type="button" id="btn-cancelar" class="btn btn-secondary btn-block btn-sm">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <h3>Contactos</h3>
+    <ul id="contactList" class="list-group mb-3">
+      <li class="list-group-item">
+        <div class="contact-info">
+          <input type="radio" name="contacto" value="John Doe"> 
+          <strong>John Doe</strong><br>
+          <span class="text-muted small">CBU: 123456789 | Alias: john.doe | Banco: ABC</span>
+        </div>
+      </li>
+      <li class="list-group-item">
+        <div class="contact-info">
+          <input type="radio" name="contacto" value="Jane Smith">
+          <strong>Jane Smith</strong><br>
+          <span class="text-muted small">CBU: 987654321 | Alias: jane.smith | Banco: XYZ</span>
+        </div>
+      </li>
+    </ul>
+
+    <div class="form-group">
+        <label for="monto-transferencia">Monto a transferir:</label>
+        <input type="number" class="form-control" id="monto-transferencia" placeholder="Ingresa el monto">
+    </div>
+
+    <button type="button" id="btn-enviar" class="btn btn-primary btn-block">Enviar dinero</button>
+    <br>
+    <a href="menu.html" class="btn btn-secondary btn-block">Volver al Menú Principal</a>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script>
+    $(document).ready(function() {
+
+      $('#btn-mostrar-form').click(function() {
+        $('#formulario-emergente').show();
+        $('#btn-mostrar-form').hide();
+      });
+
+      $('#btn-cancelar').click(function() {
+        $('#formulario-emergente').hide();
+        $('#btn-mostrar-form').show();
+        $('#nuevo-nombre').val('');
+        $('#nuevo-cbu').val('');
+        $('#nuevo-alias').val('');
+        $('#nuevo-banco').val('');
+      });
+
+      $('#btn-guardar').click(function() {
+        var nombre = $('#nuevo-nombre').val();
+        var cbu = $('#nuevo-cbu').val();
+        var alias = $('#nuevo-alias').val();
+        var banco = $('#nuevo-banco').val();
+
+        if (nombre !== "" && cbu !== "" && alias !== "" && banco !== "") {
+            
+            var nuevoHTML = '<li class="list-group-item">' +
+                            '<div class="contact-info">' +
+                            '<input type="radio" name="contacto" value="' + nombre + '"> ' +
+                            '<strong>' + nombre + '</strong><br>' +
+                            '<span class="text-muted small">CBU: ' + cbu + ' | Alias: ' + alias + ' | Banco: ' + banco + '</span>' +
+                            '</div>' +
+                            '</li>';
+
+            $('#contactList').append(nuevoHTML);
+            
+            $('#formulario-emergente').hide();
+            $('#btn-mostrar-form').show();
+            
+            $('#nuevo-nombre').val('');
+            $('#nuevo-cbu').val('');
+            $('#nuevo-alias').val('');
+            $('#nuevo-banco').val('');
+            
+            $('#alerta-container').html('<div class="alert alert-success">Contacto agregado correctamente</div>');
+
+        } else {
+            $('#alerta-container').html('<div class="alert alert-danger">Por favor completa todos los campos</div>');
+        }
+      });
+
+      $('#buscador').on('keyup', function() {
+        var valorBusqueda = $(this).val().toLowerCase();
+        
+        $('#contactList li').filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(valorBusqueda) > -1)
+        });
+      });
+
+      $('#btn-enviar').click(function() {
+        var seleccionado = $('input[name="contacto"]:checked').val();
+        var monto = $('#monto-transferencia').val();
+        var saldoActual = parseInt(localStorage.getItem('saldo')) || 60000;
+
+        if (seleccionado && monto) {
+            
+            if (parseInt(monto) > saldoActual) {
+                 $('#alerta-container').html('<div class="alert alert-danger">Fondos insuficientes</div>');
+                 return;
+            }
+
+            var nuevoSaldo = saldoActual - parseInt(monto);
+            localStorage.setItem('saldo', nuevoSaldo);
+
+            $('#alerta-container').html('<div class="alert alert-success">Enviado $' + monto + ' a ' + seleccionado + '</div>');
+            
+            setTimeout(function() {
+                window.location.href = "menu.html";
+            }, 2000);
+            
+        } else {
+            $('#alerta-container').html('<div class="alert alert-warning">Debes seleccionar un contacto e ingresar un monto</div>');
+        }
+      });
+
+    });
+  </script>
+</body>
+</html>

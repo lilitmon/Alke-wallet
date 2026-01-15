@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallet App - Movimientos</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f0f2f5;
+      padding-top: 40px;
+      padding-bottom: 40px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0px 10px 25px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #343a40;
+      margin-bottom: 25px;
+      font-weight: bold;
+    }
+
+    .btn {
+      border-radius: 50px;
+      padding: 10px 20px;
+      margin-bottom: 10px;
+    }
+    
+    .form-control {
+      border-radius: 10px;
+      height: 45px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Últimos Movimientos</h2>
+    
+    <div class="form-group">
+      <label for="filtro-tipo">Filtrar por tipo:</label>
+      <select class="form-control" id="filtro-tipo">
+        <option value="todos">Todos</option>
+        <option value="compra">Compras</option>
+        <option value="deposito">Depósitos</option>
+        <option value="transferencia">Transferencias</option>
+      </select>
+    </div>
+
+    <ul id="lista-movimientos" class="list-group mb-3">
+    </ul>
+
+    <a href="menu.html" class="btn btn-secondary btn-block">Volver al Menú Principal</a>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script>
+    var listaTransacciones = [
+      { tipo: 'compra', monto: '$50.00', detalle: 'Compra en línea' },
+      { tipo: 'deposito', monto: '$100.00', detalle: 'Depósito en efectivo' },
+      { tipo: 'transferencia', monto: '$75.00', detalle: 'Transferencia recibida' },
+      { tipo: 'compra', monto: '$5550.00', detalle: 'Compra en línea' },
+      { tipo: 'deposito', monto: '$10500.00', detalle: 'Depósito misma cuenta' },
+      { tipo: 'transferencia', monto: '$7575.00', detalle: 'Transferencia recibida' }
+    ];
+
+    function getTipoTransaccion(tipo) {
+      if (tipo === 'compra') {
+        return 'Compra';
+      } else if (tipo === 'deposito') {
+        return 'Depósito';
+      } else if (tipo === 'transferencia') {
+        return 'Transferencia';
+      }
+      return tipo;
+    }
+
+    function mostrarUltimosMovimientos(filtro) {
+      $('#lista-movimientos').empty();
+
+      for (var i = 0; i < listaTransacciones.length; i++) {
+        var transaccion = listaTransacciones[i];
+
+        if (filtro === 'todos' || transaccion.tipo === filtro) {
+          
+          var tipoLegible = getTipoTransaccion(transaccion.tipo);
+          
+          var htmlItem = '<li class="list-group-item">' + 
+                         '<strong>' + tipoLegible + ':</strong> ' + 
+                         transaccion.detalle + ' - ' + transaccion.monto + 
+                         '</li>';
+
+          $('#lista-movimientos').append(htmlItem);
+        }
+      }
+    }
+
+    $(document).ready(function() {
+      
+      mostrarUltimosMovimientos('todos');
+
+      $('#filtro-tipo').change(function() {
+        var seleccion = $(this).val();
+        mostrarUltimosMovimientos(seleccion);
+      });
+
+    });
+  </script>
+</body>
+</html>
