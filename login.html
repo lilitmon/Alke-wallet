@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wallet App - Login</title>
+  <!--estilo de bootstrap para el diseño responsivo-->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <style>
+  <style> 
+  /*se le aplico un estilo mas suave y redondeado a la caja, botones y formularios*/
     body {
       background-color: #f3e5f5;
       padding-top: 40px;
@@ -18,7 +20,7 @@
       margin: 0 auto;
       background-color: #ffffff;
       padding: 30px;
-      border-radius: 15px;
+      border-radius: 15px; 
       box-shadow: 0px 10px 25px rgba(216, 191, 216, 0.5);
     }
 
@@ -68,24 +70,27 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <script>
+    //se ejecuta cuando la pagina a termina de cargar
     $(document).ready(function() {
-      
+      //detecta cuando se envia el formulario de login
       $('#loginForm').submit(function(event) {
+        //evita que la pagina se recargue al enviar el formulario
         event.preventDefault(); 
-
+        // guarda los valores escritos en input en variables
         const email = $('#email').val();
         const password = $('#password').val();
-
+        // verifica las credenciales
         if (email === "prueba@wallet.com" && password === "123456") {
+          //si coinciden se muestra un mensaje de exito y se redirige a menu.html
           $('#mensaje').html('<div class="alert alert-success">Login correcto. Redirigiendo...</div>');
           window.location.href = "menu.html"; 
-        } else {
+        } else { //si no coinciden muestra mensaje de error
           $('#mensaje').html('<div class="alert alert-danger">Usuario o contraseña incorrectos</div>');
-        }
+        } 
 
       });
 
     });
   </script>
 </body>
-</html>S
+</html>
