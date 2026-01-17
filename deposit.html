@@ -73,25 +73,40 @@
   <script>
     $(document).ready(function() {
       
-      var saldo = localStorage.getItem('saldo') || 60000;
+      var saldo = localStorage.getItem('saldo');
+
+      if (saldo === null) {
+          saldo = 60000;
+      }
       $('#saldo-actual').text(saldo);
 
       $('#btn-depositar').click(function() {
+        
+        //guarda valor que escribio el usuario en input
         var monto = $('#depositAmount').val();
 
+        //verifica que la caja no este vacia.
         if(monto !== "") {
+          
+          //parseInt() convierte el texto en número para poder sumarlo en vez de que se peguen los textos.
           var nuevoSaldo = parseInt(saldo) + parseInt(monto);
+          
+          //guarda el resultado de la suma en la memoria del navegador.
           localStorage.setItem('saldo', nuevoSaldo);
 
+          //muestra mensaje confirmando el monto
           $('#leyenda-deposito').text('Monto depositado: $' + monto);
 
+          //muestra una alerta verde de exito
           $('#alert-container').html('<div class="alert alert-success">Depósito realizado con éxito.</div>');
 
+          //se usa setTimeout para esperar 2 segundos antes de volver al menu para que el usuario alcance a leer el mensaje.
           setTimeout(function() {
             window.location.href = "menu.html";
           }, 2000);
 
         } else {
+          //si la caja esta vacia muestra error.
           $('#alert-container').html('<div class="alert alert-danger">Ingrese un monto válido</div>');
         }
       });
