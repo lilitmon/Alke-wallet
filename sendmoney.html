@@ -6,6 +6,7 @@
   <title>Wallet App - Enviar Dinero</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <style>
+    
     body {
       background-color: #f3e5f5;
       padding-top: 40px;
@@ -56,26 +57,19 @@
         <input type="text" class="form-control" id="buscador" placeholder="Escribe un nombre...">
     </div>
 
-    <button type="button" id="btn-mostrar-form" class="btn btn-success btn-block mb-3">Agregar nuevo contacto</button>
-
-    <div id="formulario-emergente">
-        <h4>Nuevo Contacto</h4>
+    <hr> <div id="formulario-contacto">
+        <h4>Agregar Nuevo Contacto</h4>
         <input type="text" class="form-control mb-2" id="nuevo-nombre" placeholder="Nombre">
         <input type="text" class="form-control mb-2" id="nuevo-cbu" placeholder="CBU">
         <input type="text" class="form-control mb-2" id="nuevo-alias" placeholder="Alias">
         <input type="text" class="form-control mb-2" id="nuevo-banco" placeholder="Banco">
         
-        <div class="row">
-            <div class="col-6">
-                <button type="button" id="btn-guardar" class="btn btn-primary btn-block btn-sm">Guardar</button>
-            </div>
-            <div class="col-6">
-                <button type="button" id="btn-cancelar" class="btn btn-secondary btn-block btn-sm">Cancelar</button>
-            </div>
-        </div>
+        <button type="button" id="btn-guardar" class="btn btn-success btn-block btn-sm">Guardar Contacto</button>
     </div>
 
-    <h3>Contactos</h3>
+    <hr>
+
+    <h3>Lista de Contactos</h3>
     <ul id="contactList" class="list-group mb-3">
       <li class="list-group-item">
         <div class="contact-info">
@@ -108,29 +102,19 @@
   <script>
     $(document).ready(function() {
 
-      $('#btn-mostrar-form').click(function() {
-        $('#formulario-emergente').show();
-        $('#btn-mostrar-form').hide();
-      });
-
-      $('#btn-cancelar').click(function() {
-        $('#formulario-emergente').hide();
-        $('#btn-mostrar-form').show();
-        $('#nuevo-nombre').val('');
-        $('#nuevo-cbu').val('');
-        $('#nuevo-alias').val('');
-        $('#nuevo-banco').val('');
-      });
-
+      //guardar nuevo contacto
       $('#btn-guardar').click(function() {
+        //guarda los valores iscritos en los campos en variables
         var nombre = $('#nuevo-nombre').val();
         var cbu = $('#nuevo-cbu').val();
         var alias = $('#nuevo-alias').val();
         var banco = $('#nuevo-banco').val();
 
+        //verifica que no esten vacios
         if (nombre !== "" && cbu !== "" && alias !== "" && banco !== "") {
             
-            var nuevoHTML = '<li class="list-group-item">' +
+            //creamos una variable para guardar los datos ingresados
+            var nuevatarjeta = '<li class="list-group-item">' +
                             '<div class="contact-info">' +
                             '<input type="radio" name="contacto" value="' + nombre + '"> ' +
                             '<strong>' + nombre + '</strong><br>' +
@@ -138,11 +122,10 @@
                             '</div>' +
                             '</li>';
 
-            $('#contactList').append(nuevoHTML);
+            //agrega el nuevo contacto al final de la lista
+            $('#contactList').append(nuevatarjeta);
             
-            $('#formulario-emergente').hide();
-            $('#btn-mostrar-form').show();
-            
+            //limpia los campos para que queden vacios de nuevo
             $('#nuevo-nombre').val('');
             $('#nuevo-cbu').val('');
             $('#nuevo-alias').val('');
@@ -151,35 +134,43 @@
             $('#alerta-container').html('<div class="alert alert-success">Contacto agregado correctamente</div>');
 
         } else {
-            $('#alerta-container').html('<div class="alert alert-danger">Por favor completa todos los campos</div>');
+            $('#alerta-container').html('<div class="alert alert-danger">Por favor completa todos los campos del contacto</div>');
         }
       });
 
+      //buscador en tiempo real
       $('#buscador').on('keyup', function() {
         var valorBusqueda = $(this).val().toLowerCase();
         
+        //filtra la lista mostrando los que coinciden
         $('#contactList li').filter(function() {
           $(this).toggle($(this).text().toLowerCase().indexOf(valorBusqueda) > -1)
         });
       });
 
+      //logica para enviar dinero
       $('#btn-enviar').click(function() {
         var seleccionado = $('input[name="contacto"]:checked').val();
         var monto = $('#monto-transferencia').val();
+        
+        //recupera el saldo de la memoria
         var saldoActual = parseInt(localStorage.getItem('saldo')) || 60000;
 
         if (seleccionado && monto) {
             
+            //reviza si el dinero alcanza
             if (parseInt(monto) > saldoActual) {
                  $('#alerta-container').html('<div class="alert alert-danger">Fondos insuficientes</div>');
                  return;
             }
 
+            //realiza la resta y guarda el nuevo saldo
             var nuevoSaldo = saldoActual - parseInt(monto);
             localStorage.setItem('saldo', nuevoSaldo);
 
             $('#alerta-container').html('<div class="alert alert-success">Enviado $' + monto + ' a ' + seleccionado + '</div>');
             
+            //espera 2 segundos y redirige al menu principal
             setTimeout(function() {
                 window.location.href = "menu.html";
             }, 2000);
